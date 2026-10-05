@@ -13,37 +13,30 @@ jobs:
     - name: Descargar codigo
       uses: actions/checkout@v4
 
-     # 2. Configura Node.js para compilar la interfaz de Vue
+    # 2. Configura Node.js versión 24 para evitar la advertencia de obsolescencia
     - name: Configurar Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: 20
+        node-version: 24
 
     # 3. Configura las herramientas de Rust
     - name: Configurar Rust
       uses: dtolnay/rust-toolchain@stable
 
-    # 4. Caché de Rust para que las próximas compilaciones sean más rápidas
-    - name: Cache de Rust
-      uses: swatinem/rust-cache@v2
-
-    # 5. Instala las dependencias y compila el frontend de Vue
+    # 4. Instala dependencias y compila el frontend de Vue
     - name: Instalar dependencias y compilar Frontend
       run: |
         npm install
         npm run build
 
-    # 6. Compila el ejecutable de Rust
-    # NOTA: Si usas Tauri, cambia este comando por "npm run tauri build"
+    # 5. Compila el ejecutable de Rust
     - name: Compilar ejecutable Rust
       run: |
         cargo build --release
 
-    # 7. Guarda el archivo .exe generado para descargarlo
+    # 6. Guarda el archivo .exe generado para descargarlo
     - name: Subir archivo EXE generado
       uses: actions/upload-artifact@v4
       with:
         name: ejecutable-windows
-        path: |
-          target/release/*.exe
-          src-tauri/target/release/bundle/msi/*.msi
+        path: target/release/*.exe
