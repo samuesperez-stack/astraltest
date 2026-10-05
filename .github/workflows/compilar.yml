@@ -13,28 +13,35 @@ jobs:
     - name: Descargar codigo
       uses: actions/checkout@v4
 
-    # 2. Configura Node.js versión 24 para evitar la advertencia de obsolescencia
+    # 2. Configura Node.js habilitando la detección automática de Corepack (para pnpm/yarn/npm)
     - name: Configurar Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 24
 
-    # 3. Configura las herramientas de Rust
+    # 3. Activa Corepack para evitar el fallo de Turborepo al buscar el binario
+    - name: Habilitar Administrador de Paquetes (Corepack)
+      run: |
+        corepack enable
+        corepack prepare --activate
+
+    # 4. Configura las herramientas de Rust
     - name: Configurar Rust
       uses: dtolnay/rust-toolchain@stable
 
-    # 4. Instala dependencias y compila el frontend de Vue
+    # 5. Instala dependencias y compila usando el frontend nativo
+    # Cambiamos npm install por "corepack npm install" o el comando que use tu monorepo
     - name: Instalar dependencias y compilar Frontend
       run: |
         npm install
         npm run build
 
-    # 5. Compila el ejecutable de Rust
+    # 6. Compila el ejecutable de Rust
     - name: Compilar ejecutable Rust
       run: |
         cargo build --release
 
-    # 6. Guarda el archivo .exe generado para descargarlo
+    # 7. Guarda el archivo .exe generado para descargarlo
     - name: Subir archivo EXE generado
       uses: actions/upload-artifact@v4
       with:
