@@ -1,0 +1,29 @@
+name: Compilar Proyecto a EXE
+
+# El proceso se activará automáticamente cada vez que subas cambios (push) a la rama main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # Usa los servidores con Windows de GitHub
+    runs-on: windows-latest
+
+    steps:
+    # 1. Descarga el código de tu repositorio en el servidor de GitHub
+    - name: Descargar codigo
+      uses: actions/checkout@v4
+
+    # 2. AQUÍ VA EL PASO DE COMPILACIÓN (Depende de tu lenguaje, lee la sección de abajo)
+    - name: Compilar ejecutable
+      run: |
+        echopip install pyinstaller
+    pyinstaller --onefile tu_archivo.py"
+
+    # 3. Guarda el archivo .exe resultante para que puedas descargarlo desde GitHub
+    - name: Subir archivo EXE generado
+      uses: actions/upload-artifact@v4
+      with:
+        name: ejecutable-proyecto
+        path: ./**/*.exe  # Busca cualquier archivo .exe generado en el proyecto
