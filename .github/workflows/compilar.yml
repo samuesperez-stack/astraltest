@@ -1,29 +1,50 @@
-name: Compilar Proyecto a EXE
+name: Compilar Proyecto Rust y Vue
 
-# El proceso se activará automáticamente cada vez que subas cambios (push) a la rama main
 on:
   push:
     branches: [ "main" ]
 
 jobs:
   build:
-    # Usa los servidores con Windows de GitHub
     runs-on: windows-latest
 
     steps:
-    # 1. Descarga el código de tu repositorio en el servidor de GitHub
+    # 1. Descarga el código del repositorio
     - name: Descargar codigo
       uses: actions/checkout@v4
 
-    # 2. AQUÍ VA EL PASO DE COMPILACIÓN (Depende de tu lenguaje, lee la sección de abajo)
-    - name: Compilar ejecutable
-      run: |
-        echopip install pyinstaller
-    pyinstaller --onefile tu_archivo.py"
+    # 2. Configura Node.js para compilar la interfaz de Vue
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm' # Cambia a 'yarn' o 'pnpm' si usas otros gestores
 
-    # 3. Guarda el archivo .exe resultante para que puedas descargarlo desde GitHub
+    # 3. Configura las herramientas de Rust
+    - name: Configurar Rust
+      uses: dtolnay/rust-toolchain@stable
+
+    # 4. Caché de Rust para que las próximas compilaciones sean más rápidas
+    - name: Cache de Rust
+      uses: swatinem/rust-cache@v2
+
+    # 5. Instala las dependencias y compila el frontend de Vue
+    - name: Instalar dependencias y compilar Frontend
+      run: |
+        npm install
+        npm run build
+
+    # 6. Compila el ejecutable de Rust
+    # NOTA: Si usas Tauri, cambia este comando por "npm run tauri build"
+    - name: Compilar ejecutable Rust
+      run: |
+        cargo build --release
+
+    # 7. Guarda el archivo .exe generado para descargarlo
     - name: Subir archivo EXE generado
       uses: actions/upload-artifact@v4
       with:
-        name: ejecutable-proyecto
-        path: ./**/*.exe  # Busca cualquier archivo .exe generado en el proyecto
+        name: ejecutable-windows
+        path: |
+          target/release/*.exe
+          src-tauri/target/release/bundle/msi/*.msi
