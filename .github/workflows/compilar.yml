@@ -13,12 +13,11 @@ jobs:
     - name: Descargar codigo
       uses: actions/checkout@v4
 
-    # 2. Configura Node.js para compilar la interfaz de Vue
+     # 2. Configura Node.js para compilar la interfaz de Vue
     - name: Configurar Node.js
       uses: actions/setup-node@v4
       with:
         node-version: 20
-        cache: 'npm' # Cambia a 'yarn' o 'pnpm' si usas otros gestores
 
     # 3. Configura las herramientas de Rust
     - name: Configurar Rust
