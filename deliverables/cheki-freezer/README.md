@@ -1,5 +1,7 @@
 # CHEKI Freezer — entregables
 
+**Nueva versión:** [V2 con efectos de letras y cameos](v2/README.md). La V1 se conserva debajo.
+
 Montaje vertical de 42,9 segundos: 1080 × 1920, 30 fps, H.264/AAC, 15 escenas con recursos generados por IA, composición 2.5D y letra facilitada por el usuario.
 
 ## Descargar
