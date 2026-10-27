@@ -1,0 +1,10 @@
+{
+  "frames": 1287,
+  "max_world_units_per_frame": 0.13631742287555043,
+  "max_rotation_radians_per_frame": 0.012500522222906797,
+  "minimum_camera_height": 1.2989462699762446,
+  "max_absolute_x": 2.6462324815730858,
+  "monotonic_forward_path": true,
+  "continuous_camera": "passed",
+  "note": "Numerical camera continuity/clearance check, not an audio or aesthetic approval."
+}

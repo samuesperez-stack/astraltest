@@ -1,0 +1,18 @@
+{
+  "video": {
+    "codec": "h264",
+    "width": 1080,
+    "height": 1920,
+    "fps": "30/1",
+    "frames": 1287
+  },
+  "audio": {
+    "codec": "aac",
+    "source_output_zero_lag_correlation": 0.9999780160809024,
+    "decoded_stereo_peak": 0.797608494758606,
+    "true_peak_dbfs": -0.7
+  },
+  "duration": 42.9,
+  "decode": "passed",
+  "lyrics": "Exact user text preserved; editorial cue times not manually verified against voice."
+}

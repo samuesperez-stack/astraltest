@@ -1,0 +1,8 @@
+{
+  "frames_checked": 1287,
+  "minimum_mean_RGB_excluding_fades": 8.811129385964913,
+  "maximum_near_identical_frame_run": 0,
+  "mean_adjacent_frame_difference": 8.855377197265625,
+  "decoded_frame_motion": "passed",
+  "note": "Low-resolution frame coverage/motion check; does not certify visual taste or vocal timing."
+}

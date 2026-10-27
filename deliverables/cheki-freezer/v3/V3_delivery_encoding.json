@@ -1,0 +1,11 @@
+{
+  "master": "CHEKI_OneTake_V3_Master_1.mp4",
+  "master_bytes": 135650989,
+  "delivery": "CHEKI_OneTake_V3.mp4",
+  "delivery_bytes": 77778721,
+  "delivery_crf": 25,
+  "resolution": "1080x1920",
+  "fps": 30,
+  "audio": "stream copied without re-encoding",
+  "note": "Master preserved; delivery uses additional H264 compression to fit GitHub."
+}
