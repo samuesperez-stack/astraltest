@@ -1,0 +1,27 @@
+[
+  {
+    "file": "TOYP_Motion_V2.mp4",
+    "bytes": 8984339,
+    "sha256": "f80852e7b4b6135b9f982121589dd8e830ca9bd9521ef6a6e696437f6322eedd"
+  },
+  {
+    "file": "TOYP_Proyecto_V2.zip",
+    "bytes": 10531214,
+    "sha256": "04bf62f10a42aa47d7fc3d99c4a401c8d6b45f80ac6e7fd18a9041ba17500b17"
+  },
+  {
+    "file": "TOYP_V2_Preview.mp4",
+    "bytes": 1607069,
+    "sha256": "a1ac19afcf008653df41eee7a452fee5e7f05b06c0c15a95a38c46c1bb5ff164"
+  },
+  {
+    "file": "TOYP_V2_Encuadres.jpg",
+    "bytes": 219472,
+    "sha256": "e49d19e2fc3d3678cf579d51add0080ec33bf844a5cf234f54ce5226e2dfd7b5"
+  },
+  {
+    "file": "verification.json",
+    "bytes": 499,
+    "sha256": "47841aefec85757e3a50e7ef7bfa9aab3c9c5f24a0001b604e3e530515add717"
+  }
+]
