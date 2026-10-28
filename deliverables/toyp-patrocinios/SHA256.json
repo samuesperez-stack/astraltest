@@ -1,0 +1,27 @@
+[
+  {
+    "file": "TOYP_Patrocinios.mp4",
+    "bytes": 4939224,
+    "sha256": "d2e644e42f7c06a317d3aadd17a66c189f5d97584b9822d174ea021ec8b3be35"
+  },
+  {
+    "file": "TOYP_Proyecto.zip",
+    "bytes": 4853893,
+    "sha256": "39bffa1ac9b4ff79d6a84420ad9f4395b45b56623b48057b139032ab9802dc12"
+  },
+  {
+    "file": "TOYP_Encuadres.jpg",
+    "bytes": 175923,
+    "sha256": "c5c12e46072327635ff0db4234e55cfda31a42feb5d349273f2ec92a666d0067"
+  },
+  {
+    "file": "TOYP_Apertura.mp4",
+    "bytes": 1304203,
+    "sha256": "b96cc60d3d4d6efe889807e3027fbdec3283627280ccfa05af5ee231496913f9"
+  },
+  {
+    "file": "verification.json",
+    "bytes": 542,
+    "sha256": "98e9338eb958d3e389e67bfe2f5af3da69791249caa162e80a6b37d7d61721f4"
+  }
+]
