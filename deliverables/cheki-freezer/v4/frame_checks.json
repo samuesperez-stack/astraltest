@@ -1,0 +1,30 @@
+{
+  "frames_analyzed": 1287,
+  "analysis_resolution": [
+    108,
+    192
+  ],
+  "dark_frames_under_mean_4": 0,
+  "minimum_mean_luma": 37.79142379760742,
+  "minimum_adjacent_frame_difference": 0.1997009962797165,
+  "longest_near_identical_run_frames": 0,
+  "contact_sheet_seconds": [
+    1.5,
+    2.65,
+    4.3,
+    7.85,
+    9.9,
+    12.7,
+    15.7,
+    17.2,
+    20.7,
+    23.55,
+    25.5,
+    27.85,
+    31.15,
+    33.5,
+    36,
+    42.4
+  ],
+  "review": "Selected frames visually reviewed; this does not verify word-level vocal synchronization."
+}

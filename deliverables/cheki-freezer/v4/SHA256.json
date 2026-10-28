@@ -1,0 +1,37 @@
+[
+  {
+    "file": "CHEKI_Reality_V4.mp4",
+    "bytes": 26140618,
+    "sha256": "7e3aee6a256a6b468a5c9557d171c0438773958df2d2cc7fde2e9af480ad161a"
+  },
+  {
+    "file": "CHEKI_Proyecto_V4.zip",
+    "bytes": 68385668,
+    "sha256": "054b9b777c51ec3fb3edd5d02f38b729eb8612cb468ef501fe51cb6b243847bd"
+  },
+  {
+    "file": "CHEKI_V4_Proof.mp4",
+    "bytes": 2842796,
+    "sha256": "7ef209be61493bffc951dad5f3cfa6f1aa71e1b5799b685c5dfdb4ff1e74091d"
+  },
+  {
+    "file": "CHEKI_V4_Supermercado.mp4",
+    "bytes": 4040064,
+    "sha256": "0efa9d698b4a04ccf4c955e03ea94fba94b4c026fe24b19fc5df1f331a30b36c"
+  },
+  {
+    "file": "V4_contact.jpg",
+    "bytes": 831178,
+    "sha256": "671f6e84b863b7f6932034960d08125846c2afbbcd3e53847f1a26df908a13ac"
+  },
+  {
+    "file": "verification.json",
+    "bytes": 432,
+    "sha256": "8e30cc8e9d375a4baba6e660524272cb8a8f3712f2de6ceedd84d9524b0f783d"
+  },
+  {
+    "file": "frame_checks.json",
+    "bytes": 551,
+    "sha256": "70502064ff0dac40805744c1e98f4766c52d86b9846193389224fc7c28190d59"
+  }
+]
