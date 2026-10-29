@@ -1,0 +1,77 @@
+{
+  "file": "public/audio/full-v4.wav",
+  "duration_seconds": 20.0,
+  "sample_rate": 48000,
+  "channels": 2,
+  "samples_per_channel": 960000,
+  "codec": "pcm_s24le",
+  "integrated_lufs": -41.8,
+  "true_peak_dbfs": -16.7,
+  "last_10ms_peak_linear": 0.0,
+  "decode": "passed",
+  "voice": false,
+  "music": "None; original sound effects only",
+  "source_excerpt_seconds": null,
+  "intro_seconds": [
+    0,
+    1.5
+  ],
+  "logo_transition_seconds": 1.15,
+  "shutter_seconds": [
+    1.7,
+    2.2,
+    2.7,
+    3.2,
+    3.7
+  ],
+  "anonymity_flip_seconds": [
+    4.08,
+    4.667
+  ],
+  "camera_stop_seconds": 4.5,
+  "scan_seconds": [
+    4.85,
+    7.15
+  ],
+  "selection_times_seconds": [
+    5.01,
+    5.01,
+    5.34,
+    5.67,
+    5.67,
+    6.0,
+    6.32,
+    6.32,
+    6.65,
+    6.98
+  ],
+  "audible_row_locks_seconds": [
+    5.01,
+    5.34,
+    5.67,
+    6.0,
+    6.32,
+    6.65,
+    6.98
+  ],
+  "cards_leave_wall_seconds": [
+    8,
+    8.8
+  ],
+  "carousel_accents_seconds": [
+    9,
+    10,
+    11,
+    12
+  ],
+  "solo_10_cut_seconds": 13,
+  "institutional_close_seconds": [
+    16,
+    20
+  ],
+  "end_fade_seconds": [
+    19.2,
+    20
+  ],
+  "note": "Technical verification only. No voice. Prior source tracks and mixes preserved."
+}
