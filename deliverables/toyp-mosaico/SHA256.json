@@ -1,0 +1,32 @@
+[
+  {
+    "file": "TOYP_40_A_10.mp4",
+    "bytes": 7356234,
+    "sha256": "53885549c3527cdb2e14368ceec02c114b8c18ab959b56ee836be156b7127ba3"
+  },
+  {
+    "file": "TOYP_Mosaico_Proyecto.zip",
+    "bytes": 13472656,
+    "sha256": "fd82b1da43ad6f02bc7b1172cc76c7960d5e8aca157cbd55527fa94db10f23ab"
+  },
+  {
+    "file": "TOYP_Mosaico_Preview.mp4",
+    "bytes": 3037766,
+    "sha256": "28e38b594231915e0dc36583d34ab17911a57da58dd1eabb7ee18b50f480cfe1"
+  },
+  {
+    "file": "TOYP_Mosaico_Encuadres.jpg",
+    "bytes": 237568,
+    "sha256": "a8d83f93cddacd9c7e25ce4fede17ca51e1264d959aabf820f00667315ce9caf"
+  },
+  {
+    "file": "verification.json",
+    "bytes": 498,
+    "sha256": "871b32c3ccae336f3c2e7cc3dffc704b28514316cbf97975e50d9a06f2247ca1"
+  },
+  {
+    "file": "MUSIC_ATTRIBUTION.txt",
+    "bytes": 333,
+    "sha256": "3f83908f2ce96fb4b5e522dc32ec7c759482e4dac96f99664847e8bbd90d67b7"
+  }
+]

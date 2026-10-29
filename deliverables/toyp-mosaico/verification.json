@@ -1,0 +1,24 @@
+{
+  "width": 1080,
+  "height": 1920,
+  "fps": 60,
+  "frames": 1080,
+  "duration": 18.005,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "full_decode": "passed",
+  "source_audio_zero_lag_correlation": 0.9999904344346352,
+  "true_peak_dbfs": -1.4,
+  "unexpected_black_frames_after_first_second": 0,
+  "review_frames_seconds": [
+    1.7,
+    3.8,
+    5.8,
+    6.8,
+    8.5,
+    11.8,
+    12.8,
+    16
+  ],
+  "voice": "No voice. Inspired by Kevin MacLeod, CC BY 4.0, excerpt plus original SFX."
+}
