@@ -1,0 +1,30 @@
+{
+  "MUSIC_ATTRIBUTION.txt": {
+    "bytes": 323,
+    "sha256": "b4b1f36cba7ebfa0c5e8dbb8fba8fea45bb6a334baacfdf3c3e6d71fdd7a2376"
+  },
+  "README.md": {
+    "bytes": 2712,
+    "sha256": "b779793c42848c5009a2a0acd63c83c1ecd30405bb345fdeebf891d2e0c3d29f"
+  },
+  "TOYP_40_A_10_Completo_V3.mp4": {
+    "bytes": 10729751,
+    "sha256": "41abf126997bf605bf9fb84cefe2ceb452753caaa0670d60848485d8a7cb240c"
+  },
+  "TOYP_Completo_V3_Encuadres.jpg": {
+    "bytes": 636249,
+    "sha256": "8b5ac5f0874ae163c4b44cbbac668c767ff379f587ce551ba3cad069fb051552"
+  },
+  "TOYP_Completo_V3_Proyecto.zip": {
+    "bytes": 21319015,
+    "sha256": "0f986e3648abb9ca4744d3464bfb313708d6dafca1eaecf286a3b2a19bb54d4c"
+  },
+  "audio-info.json": {
+    "bytes": 1291,
+    "sha256": "94c47f470c5ade5844892d4afff311fb6f53b2576a99aa08caad1557ecb3a309"
+  },
+  "verification.json": {
+    "bytes": 966,
+    "sha256": "c4ba56dd1f6a3fb60a5ea95430b2e2c0748b07eacc8d9173bb0d0f152e513775"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "composition": "ToypFullV3",
+  "scope": "Complete social video, including logo opening and institutional closing",
+  "width": 1080,
+  "height": 1920,
+  "fps": 60,
+  "frames": 1200,
+  "video_duration_seconds": 20.0,
+  "container_duration_seconds": 20.011,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "full_decode": "passed",
+  "unexpected_black_frames_between_1s_and_19_7s": 0,
+  "source_audio_zero_lag_correlation": 0.9999902150979681,
+  "true_peak_dbfs": -2.7,
+  "integrated_lufs": -15.8,
+  "review_frames_seconds": [
+    0.5,
+    1.1,
+    2.9,
+    4.3,
+    5.4,
+    6.4,
+    7.8,
+    8.3,
+    8.8,
+    9.5,
+    10.5,
+    11.5,
+    12.5,
+    13.3,
+    14.3,
+    18.5
+  ],
+  "voiceover": false,
+  "category_pairs": [
+    [
+      1,
+      2
+    ],
+    [
+      3,
+      4
+    ],
+    [
+      5,
+      6
+    ],
+    [
+      7,
+      8
+    ],
+    [
+      9,
+      10
+    ]
+  ],
+  "music": "Inspired \u2014 Kevin MacLeod, CC BY 4.0; excerpt plus original SFX"
+}
