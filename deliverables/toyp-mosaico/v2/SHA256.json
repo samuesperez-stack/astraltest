@@ -1,0 +1,34 @@
+{
+  "MUSIC_ATTRIBUTION.txt": {
+    "bytes": 333,
+    "sha256": "3f83908f2ce96fb4b5e522dc32ec7c759482e4dac96f99664847e8bbd90d67b7"
+  },
+  "README.md": {
+    "bytes": 2442,
+    "sha256": "430df1aab948c1f5811ff4c067f0add0008c847cc3524dfee12e918a0b536916"
+  },
+  "TOYP_Mosaico_Prueba_V2.mp4": {
+    "bytes": 6139294,
+    "sha256": "795620fcc911eca9e40c7b3ad0d6094ce99ec3f05158440ae3fbe49d31a93619"
+  },
+  "TOYP_Mosaico_Prueba_V2_Proyecto.zip": {
+    "bytes": 15543887,
+    "sha256": "f77691f085959a0fb554c5bc235f83d56fda3ff794949b0ca4085288ed8251a0"
+  },
+  "TOYP_Prueba_V2_Encuadres.jpg": {
+    "bytes": 475271,
+    "sha256": "7e8d3992341d77cbd9040e1f360633f8b4650a2e2334e5fe6a6f305721d5ea9f"
+  },
+  "geometry-review.json": {
+    "bytes": 3813,
+    "sha256": "6136e39e5979161c3f37ea82ecbf44e26e989eb14733f74d6257c7d88963afec"
+  },
+  "prueba-audio-info.json": {
+    "bytes": 863,
+    "sha256": "a332d77c3ee4f5869c2691c1036ae99025d0e2101ad47499e666252a76935760"
+  },
+  "verification.json": {
+    "bytes": 565,
+    "sha256": "fcbc74baf89f68d758bda942e2c82790c4803780a17edec18d2d43da9d03d29d"
+  }
+}

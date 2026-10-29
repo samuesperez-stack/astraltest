@@ -1,0 +1,26 @@
+{
+  "composition": "ToypMosaicProofV2",
+  "scope": "Opening and selection proof only; not the completed 18-second film",
+  "width": 1080,
+  "height": 1920,
+  "fps": 60,
+  "frames": 390,
+  "video_duration_seconds": 6.5,
+  "container_duration_seconds": 6.507,
+  "video_codec": "h264",
+  "audio_codec": "aac",
+  "full_decode": "passed",
+  "black_frames": 0,
+  "source_audio_zero_lag_correlation": 0.9999912821905582,
+  "true_peak_dbfs": -2.9,
+  "review_frames_seconds": [
+    0.1,
+    1.45,
+    2.82,
+    3.25,
+    3.9,
+    4.85,
+    5.65,
+    6.483333333333333
+  ]
+}

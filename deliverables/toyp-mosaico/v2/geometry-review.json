@@ -1,0 +1,183 @@
+{
+  "source_sha256": "f19197b7ba7aa397a59f48632d82dff67b403fefd20b1ead693c57d00c3b57bd",
+  "checked_frames": [
+    0,
+    389
+  ],
+  "active_card_frame_samples": 1254,
+  "formula": "screen = perspectiveCenter + (wallLocalCorner - wallCenter) * scale * 2400 / (2400 - z); z includes .2px face offset",
+  "assumptions": [
+    "All selection occurs after camera rotation settles at3.0s and tile flips finish by3.167s.",
+    "Checks card border-box, not diffuse shadows.",
+    "Pair overlaps check simultaneously active selected cards."
+  ],
+  "clipped_card_frames": 0,
+  "selected_pair_overlaps": 0,
+  "minimum_frame_margins": {
+    "left": {
+      "pixels": 23.4954,
+      "frame": 279,
+      "tile": 12
+    },
+    "right": {
+      "pixels": 23.4954,
+      "frame": 319,
+      "tile": 29
+    },
+    "top": {
+      "pixels": 40.8002,
+      "frame": 211,
+      "tile": 1
+    },
+    "bottom": {
+      "pixels": 73.7772,
+      "frame": 359,
+      "tile": 38
+    }
+  },
+  "minimum_pair_gap": {
+    "frame": 296,
+    "tiles": [
+      20,
+      25
+    ],
+    "gap": 5.057673503337422
+  },
+  "final_frame_bounds": [
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 1,
+      "hit": 3.5071,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 197.8042,
+      "right": 359.2693,
+      "top": 73.7772,
+      "bottom": 315.9748
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 4,
+      "hit": 3.5071,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 720.7307,
+      "right": 882.1958,
+      "top": 73.7772,
+      "bottom": 315.9748
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 8,
+      "hit": 3.8381,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 372.1131,
+      "right": 533.5781,
+      "top": 328.8186,
+      "bottom": 571.0161
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 12,
+      "hit": 4.169,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 23.4954,
+      "right": 184.9604,
+      "top": 583.8599,
+      "bottom": 826.0574
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 16,
+      "hit": 4.169,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 720.7307,
+      "right": 882.1958,
+      "top": 583.8599,
+      "bottom": 826.0574
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 20,
+      "hit": 4.5,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 372.1131,
+      "right": 533.5781,
+      "top": 838.9012,
+      "bottom": 1081.0988
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 25,
+      "hit": 4.831,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 197.8042,
+      "right": 359.2693,
+      "top": 1093.9426,
+      "bottom": 1336.1401
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 29,
+      "hit": 4.831,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 895.0396,
+      "right": 1056.5046,
+      "top": 1093.9426,
+      "bottom": 1336.1401
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 33,
+      "hit": 5.1619,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 546.4219,
+      "right": 707.8869,
+      "top": 1348.9839,
+      "bottom": 1591.1814
+    },
+    {
+      "frame": 389,
+      "time": 6.4833,
+      "tile": 38,
+      "hit": 5.4929,
+      "z": 150.2,
+      "scale": 0.86,
+      "left": 372.1131,
+      "right": 533.5781,
+      "top": 1604.0252,
+      "bottom": 1846.2228
+    }
+  ],
+  "passed": true,
+  "visual_review": {
+    "method": "Eight sampled rendered frames and final frame; not real-time playback",
+    "times_seconds": [
+      0.1,
+      1.45,
+      2.82,
+      3.25,
+      3.9,
+      4.85,
+      5.65,
+      6.483333333333333
+    ],
+    "result": "Approved for opening/selection proof. All ten cards visible and complete; scan causality readable; no visible distortion."
+  }
+}

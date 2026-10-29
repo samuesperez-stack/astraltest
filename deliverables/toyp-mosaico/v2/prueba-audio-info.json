@@ -1,0 +1,51 @@
+{
+  "file": "public/audio/proof-v2.wav",
+  "duration_seconds": 6.5,
+  "sample_rate": 48000,
+  "channels": 2,
+  "codec": "pcm_s24le",
+  "integrated_lufs": -16.1,
+  "true_peak_dbfs": -2.9,
+  "decode": "passed",
+  "voice": false,
+  "music": "Inspired — Kevin MacLeod (incompetech.com), CC BY 4.0",
+  "source_excerpt_seconds": [
+    60,
+    66.5
+  ],
+  "shutter_seconds": [
+    0.2,
+    0.7,
+    1.2,
+    1.7,
+    2.2
+  ],
+  "camera_stop_seconds": 3.0,
+  "scan_seconds": [
+    3.35,
+    5.65
+  ],
+  "selection_times_seconds": [
+    3.51,
+    3.51,
+    3.84,
+    4.17,
+    4.17,
+    4.5,
+    4.82,
+    4.82,
+    5.15,
+    5.48
+  ],
+  "audible_row_locks_seconds": [
+    3.51,
+    3.84,
+    4.17,
+    4.5,
+    4.82,
+    5.15,
+    5.48
+  ],
+  "standalone_end_fade_seconds": 0.15,
+  "note": "Technical verification only. Original music and full-film score preserved."
+}
