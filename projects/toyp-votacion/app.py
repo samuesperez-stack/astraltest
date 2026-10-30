@@ -26,6 +26,10 @@ def setup():
 setup()
 with db() as c:
     if 'sections' not in [r[1] for r in c.execute('PRAGMA table_info(candidates)')]: c.execute("ALTER TABLE candidates ADD COLUMN sections TEXT NOT NULL DEFAULT '{}'")
+    if 'version' not in [r[1] for r in c.execute('PRAGMA table_info(scores)')]: c.execute('ALTER TABLE scores ADD COLUMN version INTEGER NOT NULL DEFAULT 1')
+    if 'ready' not in [r[1] for r in c.execute('PRAGMA table_info(candidates)')]:
+        c.execute('ALTER TABLE candidates ADD COLUMN ready INTEGER NOT NULL DEFAULT 0')
+        c.execute("UPDATE candidates SET ready=1 WHERE name NOT LIKE 'Postulado %' AND category!='Categoría pendiente'")
 def user(req,role=None):
     token=req.cookies.get('toyp_session',''); hashed=hashlib.sha256(token.encode()).hexdigest()
     with db() as c: row=c.execute('SELECT u.* FROM sessions s JOIN users u ON u.id=s.user_id WHERE s.token=? AND s.expires>?',(hashed,int(time.time()))).fetchone()
@@ -38,11 +42,18 @@ async def safety(req,call_next):
         origin=req.headers.get('origin'); host=req.headers.get('host')
         if origin and origin not in ('http://'+host,'https://'+host): return __import__('starlette.responses',fromlist=['JSONResponse']).JSONResponse({'detail':'Origen no permitido'},status_code=403)
     res=await call_next(req);res.headers['Cache-Control']='no-store';res.headers['X-Content-Type-Options']='nosniff';res.headers['X-Frame-Options']='DENY';res.headers['Content-Security-Policy']="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; frame-ancestors 'none'";return res
+async def read_object(req):
+    raw=await req.body()
+    if len(raw)>750000:raise HTTPException(413,'El contenido es demasiado grande')
+    try: data=json.loads(raw)
+    except (ValueError,UnicodeDecodeError):raise HTTPException(400,'JSON inválido')
+    if not isinstance(data,dict):raise HTTPException(400,'El contenido debe ser un objeto')
+    return data
 @app.get('/')
 def home(): return FileResponse(ROOT/'static'/'index.html')
 @app.post('/api/login')
 async def login(req:Request):
-    data=await req.json(); uid=str(data.get('id','')).strip().upper(); password=str(data.get('password','')); key=hashlib.sha256((req.client.host+':'+uid).encode()).hexdigest();now=int(time.time())
+    data=await read_object(req); uid=str(data.get('id','')).strip().upper(); password=str(data.get('password','')); key=hashlib.sha256((req.client.host+':'+uid).encode()).hexdigest();now=int(time.time())
     with db() as c:
         attempt=c.execute('SELECT * FROM attempts WHERE key=?',(key,)).fetchone()
         if attempt and attempt['until']>now and attempt['count']>=5: raise HTTPException(429,'Demasiados intentos. Intenta en 15 minutos.')
@@ -62,26 +73,34 @@ def logout(req:Request):
 def me(req:Request):
     u=user(req)
     with db() as c:
-        candidates=[dict(x) for x in c.execute('SELECT * FROM candidates ORDER BY id')];scores={str(x['candidate_id']):x['score'] for x in c.execute('SELECT candidate_id,score FROM scores WHERE user_id=?',(u['id'],))};rounds=[]
+        candidates=[dict(x) for x in c.execute('SELECT * FROM candidates ORDER BY id')];scores={str(x['candidate_id']):x['score'] for x in c.execute('SELECT candidate_id,score,version FROM scores WHERE user_id=?',(u['id'],))};versions={str(x['candidate_id']):x['version'] for x in c.execute('SELECT candidate_id,version FROM scores WHERE user_id=?',(u['id'],))};rounds=[]
         for r in c.execute("SELECT * FROM rounds WHERE status='open'").fetchall():
             choices=[dict(x) for x in c.execute('SELECT c.id,c.name FROM round_candidates rc JOIN candidates c ON c.id=rc.candidate_id WHERE rc.round_id=?',(r['id'],))];v=c.execute('SELECT candidate_id FROM round_votes WHERE round_id=? AND user_id=?',(r['id'],u['id'])).fetchone();rounds.append({'id':r['id'],'choices':choices,'vote':v[0] if v else None})
-    return {'id':u['id'],'name':u['name'],'role':u['role'],'locked':bool(u['locked']),'candidates':candidates,'scores':scores,'rounds':rounds}
+    return {'id':u['id'],'name':u['name'],'role':u['role'],'locked':bool(u['locked']),'candidates':candidates,'scores':scores,'versions':versions,'evaluation_ready':len(candidates)==20 and all(x['ready'] for x in candidates),'rounds':rounds}
 @app.put('/api/scores/{candidate_id}')
 async def score(candidate_id:int,req:Request):
-    u=user(req,'juror');d=await req.json();value=d.get('score')
-    if type(value)!=int or not 1<=value<=10:raise HTTPException(400,'Calificación inválida')
+    u=user(req,'juror');d=await read_object(req);value=d.get('score');version=d.get('version')
+    if type(value)!=int or not 1<=value<=10 or type(version)!=int or version<0:raise HTTPException(400,'Calificación o versión inválida')
     with db() as c:
         c.execute('BEGIN IMMEDIATE');state=c.execute('SELECT locked FROM users WHERE id=?',(u['id'],)).fetchone()
         if state[0]:raise HTTPException(409,'Tu evaluación ya fue enviada')
+        if c.execute('SELECT count(*) FROM candidates WHERE ready=1').fetchone()[0]!=20:raise HTTPException(409,'La organización aún está preparando los perfiles')
         if not c.execute('SELECT 1 FROM candidates WHERE id=?',(candidate_id,)).fetchone():raise HTTPException(404,'Postulado no encontrado')
-        c.execute('INSERT INTO scores VALUES(?,?,?) ON CONFLICT(user_id,candidate_id) DO UPDATE SET score=excluded.score',(u['id'],candidate_id,value))
-    return {'ok':True}
+        existing=c.execute('SELECT score,version FROM scores WHERE user_id=? AND candidate_id=?',(u['id'],candidate_id)).fetchone()
+        current=existing['version'] if existing else 0
+        if current!=version:
+            if existing and existing['score']==value and current==version+1:return {'ok':True,'version':current}
+            raise HTTPException(409,'Esta calificación cambió en otro dispositivo. Tu borrador local no se sobrescribió; contacta a la organización.')
+        next_version=current+1
+        c.execute('INSERT INTO scores(user_id,candidate_id,score,version) VALUES(?,?,?,?) ON CONFLICT(user_id,candidate_id) DO UPDATE SET score=excluded.score,version=excluded.version',(u['id'],candidate_id,value,next_version))
+    return {'ok':True,'version':next_version}
 @app.post('/api/submit')
 def submit(req:Request):
     u=user(req,'juror')
     with db() as c:
         c.execute('BEGIN IMMEDIATE'); state=c.execute('SELECT locked FROM users WHERE id=?',(u['id'],)).fetchone()[0]
         if state:raise HTTPException(409,'Tu evaluación ya fue enviada')
+        if c.execute('SELECT count(*) FROM candidates WHERE ready=1').fetchone()[0]!=20:raise HTTPException(409,'La organización aún está preparando los perfiles')
         if c.execute('SELECT count(*) FROM scores WHERE user_id=?',(u['id'],)).fetchone()[0]!=c.execute('SELECT count(*) FROM candidates').fetchone()[0]:raise HTTPException(400,'Califica a todos los postulados antes de enviar')
         c.execute('UPDATE users SET locked=1 WHERE id=?',(u['id'],))
     return {'ok':True}
@@ -98,7 +117,7 @@ def report(c):
                 counts=sorted({r['votes'] for r in rows},reverse=True)
                 groups[i:i+1]=[[str(r['candidate_id']) for r in rows if r['votes']==count] for count in counts]
                 break
-    return {'candidates':candidates,'jurors':jurors,'scores':scores,'groups':groups,'complete':len(jurors)==10 and all(x['locked'] for x in jurors)}
+    return {'candidates':candidates,'jurors':jurors,'scores':scores,'groups':groups,'started':bool(c.execute('SELECT 1 FROM scores LIMIT 1').fetchone()),'complete':len(jurors)==10 and all(x['locked'] for x in jurors)}
 @app.get('/api/admin')
 def admin(req:Request):
     user(req,'admin')
@@ -109,7 +128,7 @@ def admin(req:Request):
         return result
 @app.post('/api/admin/round')
 async def create_round(req:Request):
-    user(req,'admin');data=await req.json();ids=data.get('ids')
+    user(req,'admin');data=await read_object(req);ids=data.get('ids')
     if not isinstance(ids,list) or len(ids)<2 or any(type(x)!=int for x in ids) or len(set(ids))!=len(ids):raise HTTPException(400,'Selección inválida')
     with db() as c:
         c.execute('BEGIN IMMEDIATE');r=report(c)
@@ -120,7 +139,7 @@ async def create_round(req:Request):
     return {'ok':True}
 @app.post('/api/round/{rid}/vote')
 async def round_vote(rid:int,req:Request):
-    u=user(req,'juror');cid=(await req.json()).get('candidate_id')
+    u=user(req,'juror');cid=(await read_object(req)).get('candidate_id')
     if type(cid)!=int:raise HTTPException(400,'Selección inválida')
     with db() as c:
         c.execute('BEGIN IMMEDIATE')
@@ -142,12 +161,12 @@ def export(req:Request):
     with db() as c:r=report(c)
     out=io.StringIO();w=csv.writer(out);w.writerow(['Postulado','Categoría',*[j['id'] for j in r['jurors']],'Total'])
     for x in r['candidates']:
-        vals=r['scores'][str(x['id'])];safe=lambda s: "'"+s if s and s[0] in '=+-@\t\r' else s
+        vals=r['scores'][str(x['id'])];safe=lambda s: "'"+s if s and (s[0] in '=+-@\t\r' or s.lstrip().startswith(('=','+','-','@'))) else s
         w.writerow([safe(x['name']),safe(x['category']),*[vals.get(j['id'],'') for j in r['jurors']],sum(vals.values())])
     return StreamingResponse(iter(['\ufeff'+out.getvalue()]),media_type='text/csv',headers={'Content-Disposition':'attachment; filename="toyp-resultados.csv"'})
 @app.put('/api/admin/candidate/{cid}')
 async def edit_candidate(cid:int,req:Request):
-    user(req,'admin');d=await req.json();name=str(d.get('name','')).strip();category=str(d.get('category','')).strip();bio=str(d.get('bio','')).strip(); sections=d.get('sections',{}); photo=d.get('photo','')
+    user(req,'admin');d=await read_object(req);name=str(d.get('name','')).strip();category=str(d.get('category','')).strip();bio=str(d.get('bio','')).strip(); sections=d.get('sections',{}); photo=d.get('photo','')
     if not name or not category or max(len(name),len(category))>120 or len(bio)>3000:raise HTTPException(400,'Revisa los datos del perfil')
     allowed={'titulosCertificaciones','resumenCarrera','logrosSignificativos','liderazgoImpacto','valoresEtica'}
     if not isinstance(sections,dict) or set(sections)-allowed or any(not isinstance(v,str) or len(v)>3000 for v in sections.values()):raise HTTPException(400,'Secciones inválidas')
@@ -161,22 +180,23 @@ async def edit_candidate(cid:int,req:Request):
     with db() as c:
         c.execute('BEGIN IMMEDIATE')
         if c.execute('SELECT count(*) FROM scores').fetchone()[0]:raise HTTPException(409,'Los perfiles quedan bloqueados cuando inicia la evaluación')
-        if not c.execute('UPDATE candidates SET name=?,category=?,bio=?,sections=?,photo=? WHERE id=?',(name,category,bio,json.dumps(sections,ensure_ascii=False),photo,cid)).rowcount:raise HTTPException(404,'Postulado no encontrado')
+        if not c.execute('UPDATE candidates SET name=?,category=?,bio=?,sections=?,photo=?,ready=1 WHERE id=?',(name,category,bio,json.dumps(sections,ensure_ascii=False),photo,cid)).rowcount:raise HTTPException(404,'Postulado no encontrado')
     return {'ok':True}
 @app.post('/api/admin/import')
 async def import_ballot(req:Request):
-    admin_user=user(req,'admin');data=await req.json()
+    admin_user=user(req,'admin');data=await read_object(req)
     if not isinstance(data,dict):raise HTTPException(400,'Archivo inválido')
     uid=str(data.get('jurorId','')).strip().upper();scores=data.get('scores');final=data.get('isFinal')
     if final is not True or not isinstance(scores,dict):raise HTTPException(400,'El archivo debe contener una evaluación final.')
     with db() as c:
         c.execute('BEGIN IMMEDIATE')
+        if c.execute('SELECT count(*) FROM candidates WHERE ready=1').fetchone()[0]!=20:raise HTTPException(409,'La organización aún está preparando los perfiles')
         juror=c.execute("SELECT locked FROM users WHERE id=? AND role='juror'",(uid,)).fetchone()
         if not juror:raise HTTPException(400,'Jurado no reconocido')
         if juror[0]:raise HTTPException(409,'Este jurado ya tiene una evaluación final')
         ids={str(r[0]) for r in c.execute('SELECT id FROM candidates')}
         if set(scores)!=ids or any(type(v)!=int or not 1<=v<=10 for v in scores.values()):raise HTTPException(400,'El archivo debe contener las 20 calificaciones válidas')
-        c.executemany('INSERT INTO scores(user_id,candidate_id,score) VALUES(?,?,?) ON CONFLICT(user_id,candidate_id) DO UPDATE SET score=excluded.score',[(uid,int(cid),v) for cid,v in scores.items()])
+        c.executemany('INSERT INTO scores(user_id,candidate_id,score,version) VALUES(?,?,?,1) ON CONFLICT(user_id,candidate_id) DO UPDATE SET score=excluded.score,version=scores.version+1',[(uid,int(cid),v) for cid,v in scores.items()])
         c.execute('UPDATE users SET locked=1 WHERE id=?',(uid,))
         c.execute('CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY,actor TEXT NOT NULL,action TEXT NOT NULL,target TEXT NOT NULL,created INTEGER NOT NULL)')
         c.execute('INSERT INTO audit(actor,action,target,created) VALUES(?,?,?,?)',(admin_user['id'],'import_final',uid,int(time.time())))
