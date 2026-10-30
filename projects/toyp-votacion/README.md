@@ -8,11 +8,11 @@ Aplicación móvil para evaluar 20 perfiles mediante 10 cuentas de jurado y una 
 python -m venv .venv
 . .venv/bin/activate
 pip install -r requirements.txt
-python setup_access.py --output /ruta/privada/credenciales-toyp.txt
+python setup_access.py
 uvicorn app:app --host 127.0.0.1 --port 8000
 ```
 
-Abre http://localhost:8000. Guarda el archivo de credenciales de forma privada; se genera una sola vez, contiene once contraseñas aleatorias, y no se incluye en el repositorio. `TOYP_DB` permite ubicar SQLite fuera del directorio de la aplicación. Para una instalación accesible por internet se necesita un servidor persistente con HTTPS; usa `TOYP_HTTPS=1` tras configurar HTTPS y realiza copias de seguridad protegidas de la base. No usar GitHub Pages como servidor de votos.
+Abre http://localhost:8000. El acceso reproduce el MD: un código de jurado sin contraseña y los dos códigos administrativos del documento. Existen cinco códigos internos (JUR-INT-01 a JUR-INT-05) y cinco invitados (JUR-INV-01 a JUR-INV-05). Se preservan los identificadores internos y las notas previas. **Este esquema no verifica la identidad**: quien conozca un código puede suplantar al jurado o a administración, y las claves administrativas del ejemplo son conocidas. Úsalo solo si la organización acepta ese riesgo y controla la distribución y el acceso a la red. `TOYP_DB` permite ubicar SQLite fuera del directorio de la aplicación. Para una instalación accesible por internet se necesita un servidor persistente con HTTPS; usa `TOYP_HTTPS=1` tras configurar HTTPS y realiza copias de seguridad protegidas de la base. No usar GitHub Pages como servidor de votos.
 
 Cada jurado puntúa del 1 al 10 y el envío definitivo exige los 20 perfiles y bloquea cambios mediante una transacción. La administración ve exclusivamente notas enviadas, ranking por suma y distribución de 10 a 1, matriz, progreso, exportación CSV y una segunda votación por grupo empatado. Si la segunda vuelta también empata, se indica como pendiente; no existe voto de calidad. Las rondas solo pueden abrirse cuando los 10 jurados finalizaron. En caso de conexión interrumpida, se conserva un borrador pendiente en el navegador; el envío final requiere confirmación del servidor.
 

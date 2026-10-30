@@ -10,3 +10,7 @@ Pruebas realizadas con bases y credenciales temporales, sin utilizar la base rea
 - Vista administrativa móvil: matriz con desplazamiento horizontal, datos y edición bloqueada al iniciar la evaluación.
 
 Los archivos `juror.cjs`, `round.cjs`, `conflict.cjs` y `test_api.py` permiten reproducir las pruebas descritas en `README.md` de esta carpeta. La simulación no equivale a una auditoría independiente, no prueba todos los navegadores ni sustituye las pruebas de la instalación real con HTTPS, copias de seguridad y los 20 postulados definitivos. El respaldo de contingencia se importa bajo responsabilidad de la administración y no tiene firma criptográfica. Si se pierde la respuesta al enviar la evaluación final, el jurado debe reconectarse y comprobar el estado.
+
+## Acceso por código del MD
+
+Se volvieron a ejecutar las simulaciones con los diez códigos (cinco INT y cinco INV) y los dos códigos administrativos del MD. Se mantienen las cuentas y notas internas. Este método **no autentica la identidad** y permite la suplantación de cualquier código conocido; las pruebas funcionales no eliminan ese riesgo.

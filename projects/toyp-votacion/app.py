@@ -51,17 +51,23 @@ async def read_object(req):
     return data
 @app.get('/')
 def home(): return FileResponse(ROOT/'static'/'index.html')
+# Compatibilidad con los códigos del MD: se conservan las claves internas y votos.
+LEGACY_CODES = {"JUR-INT-01":"JUR-01", "JUR-INT-02":"JUR-02", "JUR-INV-01":"JUR-03", **{f"JUR-INT-{i:02d}":f"JUR-{i+1:02d}" for i in range(3,6)}, **{f"JUR-INV-{i:02d}":f"JUR-{i+5:02d}" for i in range(2,6)}}
+LEGACY_ADMIN_HASHES = {"64e48f3bf07307f751c02213b95e0b5e1e8351597dfbe12bce5cbf115591ce3f", "0abe56f20f41de374f6d5654ed0a9b4340941ce7edc55c7763492468a8d2f153"}
 @app.post('/api/login')
 async def login(req:Request):
-    data=await read_object(req); uid=str(data.get('id','')).strip().upper(); password=str(data.get('password','')); key=hashlib.sha256((req.client.host+':'+uid).encode()).hexdigest();now=int(time.time())
+    data=await read_object(req); code=str(data.get('code','')).strip().upper(); now=int(time.time())
+    key=hashlib.sha256(('legacy-login:'+req.client.host+':'+code).encode()).hexdigest()
     with db() as c:
         attempt=c.execute('SELECT * FROM attempts WHERE key=?',(key,)).fetchone()
         if attempt and attempt['until']>now and attempt['count']>=5: raise HTTPException(429,'Demasiados intentos. Intenta en 15 minutos.')
+        admin=hashlib.sha256(code.encode()).hexdigest() in LEGACY_ADMIN_HASHES
+        uid='ADMIN' if admin else LEGACY_CODES.get(code,'')
         u=c.execute('SELECT * FROM users WHERE id=?',(uid,)).fetchone()
-        if not u or not hmac.compare_digest(hashpw(password,u['salt']),u['pwhash']):
+        if not u or (admin and u['role']!='admin') or (not admin and u['role']!='juror'):
             count=(attempt['count'] if attempt and attempt['until']>now else 0)+1
-            c.execute('INSERT OR REPLACE INTO attempts VALUES(?,?,?)',(key,count,now+900));c.commit();raise HTTPException(401,'Credenciales incorrectas')
-        c.execute('DELETE FROM attempts WHERE key=?',(key,)); token=secrets.token_urlsafe(32); c.execute('INSERT INTO sessions VALUES(?,?,?)',(hashlib.sha256(token.encode()).hexdigest(),uid,now+28800))
+            c.execute('INSERT OR REPLACE INTO attempts VALUES(?,?,?)',(key,count,now+900));c.commit();raise HTTPException(401,'Código de acceso incorrecto')
+        c.execute('DELETE FROM attempts WHERE key=?',(key,));token=secrets.token_urlsafe(32);c.execute('INSERT INTO sessions VALUES(?,?,?)',(hashlib.sha256(token.encode()).hexdigest(),uid,now+28800))
     from fastapi.responses import JSONResponse
     res=JSONResponse({'ok':True});res.set_cookie('toyp_session',token,httponly=True,samesite='strict',secure=os.environ.get('TOYP_HTTPS')=='1',max_age=28800,path='/');return res
 @app.post('/api/logout')
@@ -76,7 +82,8 @@ def me(req:Request):
         candidates=[dict(x) for x in c.execute('SELECT * FROM candidates ORDER BY id')];scores={str(x['candidate_id']):x['score'] for x in c.execute('SELECT candidate_id,score,version FROM scores WHERE user_id=?',(u['id'],))};versions={str(x['candidate_id']):x['version'] for x in c.execute('SELECT candidate_id,version FROM scores WHERE user_id=?',(u['id'],))};rounds=[]
         for r in c.execute("SELECT * FROM rounds WHERE status='open'").fetchall():
             choices=[dict(x) for x in c.execute('SELECT c.id,c.name FROM round_candidates rc JOIN candidates c ON c.id=rc.candidate_id WHERE rc.round_id=?',(r['id'],))];v=c.execute('SELECT candidate_id FROM round_votes WHERE round_id=? AND user_id=?',(r['id'],u['id'])).fetchone();rounds.append({'id':r['id'],'choices':choices,'vote':v[0] if v else None})
-    return {'id':u['id'],'name':u['name'],'role':u['role'],'locked':bool(u['locked']),'candidates':candidates,'scores':scores,'versions':versions,'evaluation_ready':len(candidates)==20 and all(x['ready'] for x in candidates),'rounds':rounds}
+    code=next((k for k,v in LEGACY_CODES.items() if v==u['id']),None)
+    return {'id':u['id'],'code':code,'name':u['name'],'role':u['role'],'locked':bool(u['locked']),'candidates':candidates,'scores':scores,'versions':versions,'evaluation_ready':len(candidates)==20 and all(x['ready'] for x in candidates),'rounds':rounds}
 @app.put('/api/scores/{candidate_id}')
 async def score(candidate_id:int,req:Request):
     u=user(req,'juror');d=await read_object(req);value=d.get('score');version=d.get('version')
@@ -107,6 +114,7 @@ def submit(req:Request):
 def report(c):
     candidates=[dict(x) for x in c.execute('SELECT * FROM candidates ORDER BY id')];jurors=[dict(x) for x in c.execute("SELECT id,name,locked FROM users WHERE role='juror' ORDER BY id")];rows=c.execute('SELECT s.* FROM scores s JOIN users u ON u.id=s.user_id WHERE u.locked=1').fetchall();scores={str(x['id']):{} for x in candidates}
     for r in rows:scores[str(r['candidate_id'])][r['user_id']]=r['score']
+    for juror in jurors: juror['code']=next((k for k,v in LEGACY_CODES.items() if v==juror['id']),juror['id'])
     eligible={str(k):list(v.values()) for k,v in scores.items() if v}; groups=clasificar(eligible) if eligible else []
     # A completed second ballot refines only its tied group. Equal counts remain tied.
     for rnd in c.execute("SELECT id FROM rounds WHERE status='closed' ORDER BY id").fetchall():
@@ -159,7 +167,7 @@ def close_round(rid:int,req:Request):
 def export(req:Request):
     user(req,'admin')
     with db() as c:r=report(c)
-    out=io.StringIO();w=csv.writer(out);w.writerow(['Postulado','Categoría',*[j['id'] for j in r['jurors']],'Total'])
+    out=io.StringIO();w=csv.writer(out);w.writerow(['Postulado','Categoría',*[j['code'] for j in r['jurors']],'Total'])
     for x in r['candidates']:
         vals=r['scores'][str(x['id'])];safe=lambda s: "'"+s if s and (s[0] in '=+-@\t\r' or s.lstrip().startswith(('=','+','-','@'))) else s
         w.writerow([safe(x['name']),safe(x['category']),*[vals.get(j['id'],'') for j in r['jurors']],sum(vals.values())])
@@ -186,7 +194,7 @@ async def edit_candidate(cid:int,req:Request):
 async def import_ballot(req:Request):
     admin_user=user(req,'admin');data=await read_object(req)
     if not isinstance(data,dict):raise HTTPException(400,'Archivo inválido')
-    uid=str(data.get('jurorId','')).strip().upper();scores=data.get('scores');final=data.get('isFinal')
+    uid=str(data.get('jurorId','')).strip().upper();uid=LEGACY_CODES.get(uid,uid);scores=data.get('scores');final=data.get('isFinal')
     if final is not True or not isinstance(scores,dict):raise HTTPException(400,'El archivo debe contener una evaluación final.')
     with db() as c:
         c.execute('BEGIN IMMEDIATE')
