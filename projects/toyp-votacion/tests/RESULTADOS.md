@@ -14,3 +14,7 @@ Los archivos `juror.cjs`, `round.cjs`, `conflict.cjs` y `test_api.py` permiten r
 ## Acceso por código del MD
 
 Se volvieron a ejecutar las simulaciones con los diez códigos (cinco INT y cinco INV) y los dos códigos administrativos del MD. Se mantienen las cuentas y notas internas. Este método **no autentica la identidad** y permite la suplantación de cualquier código conocido; las pruebas funcionales no eliminan ese riesgo.
+
+## Selección final por categorías
+
+Simulación móvil con cuatro categorías ficticias: apertura y cierre, puntuación sin perder el grupo abierto, búsqueda, filtro, recuento y envío definitivo de las 20 fichas. Se verificó el agrupado de variantes de mayúsculas y acentos y el ancho de 320 px. Se probó también edición administrativa en dos categorías, una actualización periódica con cambios pendientes y reagrupación después de guardar. Las categorías visibles en las capturas son ejemplos, no la selección real.
